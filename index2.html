@@ -1,0 +1,230 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="initial-scale=1.0, maximum-scale=1.0, user-scalable=no, width=device-width">
+<link rel="stylesheet" href="css/bootstrap.min.css">
+<script src="js/jquery-1.11.2.min.js" type="text/javascript"></script>
+<script src="js/bootstrap.min.js"></script>
+<link rel="stylesheet" type="text/css" href="i_bootstrap.css">
+<title>Bootstrap Test</title>
+</head>
+<style>
+
+
+</style>
+<script>
+init(59, '0-60.xml', 0);
+
+function init(a, b, c){
+maxindex = a;
+currentxml = b;
+cxmlindex = c;
+start();
+	}
+
+function start(){
+$(document).ready(function() {
+	getnav();
+   getimge(0);
+   
+   $('.glyphicon-forward').click(function(){
+	   var currentindex = $('#i_title').attr("data-title-id");
+	   currentindex++;
+	   if(currentindex > maxindex){
+		   currentindex = maxindex;
+		   }
+	   getimge(currentindex);
+	   
+	   });
+	$('.glyphicon-backward').click(function(){
+	   var currentindex = $('#i_title').attr("data-title-id");
+	   currentindex--;
+	   if(currentindex < 0){
+		   currentindex = 0;
+		   }
+	   getimge(currentindex);
+	   
+	   });
+	$('.glyphicon-question-sign').click(function(){
+	   var numa = Math.random();
+	   var numb = numa*maxindex;
+	   var num = Math.round(numb);
+	   getimge(num);
+	   });
+	 $("#myModal1").on('shown.bs.modal', function () {
+            var x = $("#i_title").attr("data-title-id");
+	        $(".listactive").removeClass("active");
+            $(".listactive").eq(x).addClass("active");
+       });
+	 $("#myModal").on('shown.bs.modal', function () {
+            var x = cxmlindex;
+	        $(".listactivexml").removeClass("active");
+            $(".listactivexml").eq(x).addClass("active");
+       });
+   
+   
+});
+}
+function getimge(index) {
+	$.get(currentxml, function(response, status){
+	   if (status == "success") {
+		   var title = $(response).find('page').eq(index).find('title').text();
+		   $('#img').find('img').remove();
+		   $('#i_title').html(title);
+		   $('#i_title').attr("data-title-id",index);
+		   $('#indexnum').html(index);
+		   $(response).find('page').eq(index).find('url').each(function(){
+			   var url = $(this).text();
+			   $("#img").append('<img src="'+url+'" style="min-width: 100%" class="img-thumbnail img-responsive">');
+			   });
+		   }
+	   })
+	}
+function getnav(){
+	$.get(currentxml, function(response, status){
+	   if (status == "success") {
+		   $("#contentlist").find('.listactive').remove();
+		   $(response).find('title').each(function(){
+		   var title = $(this).text();
+		   var contentid = $(this).prev().text();
+		   var contentindex = $(this).parent().index();
+		   var siblingnum = $(this).next().children().length - 1;
+		   
+		   $("#contentlist").append('<li class="list-group-item list-group-item-success listactive" onclick="getcontent('+
+		                            contentindex+')">'+title+'<span class="badge">'+
+									siblingnum+'</span><div style="clear:both"></div></li>'
+			  );
+		   });
+		 
+		   }
+	   })
+	
+	}
+function getcontent(n){
+	getimge(n);
+	$('#myModal1').modal('hide');
+	}
+function getxml(int, xml, index){
+	init(int, xml, index);
+	$('#myModal').modal('hide');
+	}
+
+
+</script>
+<body>
+  <div id="a">
+    <h1>Example Page Header</h1>
+  </div>
+  <nav data-spy="affix" data-offset-top="150">
+    <div class="container-fluid i_header_bgstyle">
+      <div class="i_header i_header_iconsize">
+        <ul class="i_header_ul">
+          <li>
+            <a id="contentmodal" href="#" data-toggle="modal" data-target="#myModal1" >
+              <span class="glyphicon glyphicon-menu-hamburger"></span>
+            </a>
+          </li>
+          <li>
+            <a href="#" data-toggle="modal" data-target="#myModal" >
+              <span class="glyphicon glyphicon-home"></span>
+            </a>
+          </li>
+          <li>
+            <a href="#" data-toggle="modal" data-target="#myModal3" >
+              <span class="glyphicon glyphicon-user"></span>
+            </a>
+          </li> 
+        </ul>
+      </div>
+      <div class="i_header_right i_header_iconsize">
+        <ul class="i_header_ul">
+          <li><a href="#"><span class="glyphicon glyphicon-backward"></span></a></li>
+          <li><a href="#"><span class="glyphicon glyphicon-question-sign"></span></a></li>
+          <li><a href="#"><span class="glyphicon glyphicon-forward"></span></a></li> 
+        </ul>
+      </div>
+    <div style="clear:both"></div>
+    </div>
+  </nav>
+<div id="img" class="container">
+  <div id="i_title" class="well" data-title-id="0" style="margin-top:10px; font-size:1.5em">0</div>  
+</div>
+  <!-- Modal -->
+<div class="modal fade" id="myModal" role="dialog">
+  <div class="modal-dialog">
+  
+    <!-- Modal content-->
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+        <h4 class="modal-title">Updated List</h4>
+      </div>
+      <div class="modal-body">
+        <ul class="list-group">
+          <li class="list-group-item list-group-item-success listactivexml" onclick="getxml(59, '0-60.xml', 0)">2015年12月3日</li>
+          <li class="list-group-item list-group-item-info listactivexml" onclick="getxml(59, '60-60.xml', 1)">2015年12月4日</li>
+          <li class="list-group-item list-group-item-warning listactivexml" onclick="getxml(59, '120-60.xml', 2)">2015年12月4日</li>
+          <li class="list-group-item list-group-item-danger listactivexml" onclick="getxml(59, '180-60.xml', 3)">2015年12月5日</li>
+          <li class="list-group-item list-group-item-success listactivexml" onclick="getxml(59, '240-60.xml', 4)">2015年12月6日</li>
+          <li class="list-group-item list-group-item-success listactivexml" onclick="getxml(59, '300-60.xml', 5)">2015年12月7日</li>
+          <li class="list-group-item list-group-item-info listactivexml" onclick="getxml(59, '360-60.xml', 6)">2015年12月8日</li>
+          <li class="list-group-item list-group-item-warning listactivexml" onclick="getxml(59, '420-60.xml', 7)">2015年12月9日</li>
+          <li class="list-group-item list-group-item-danger listactivexml" onclick="getxml(59, '480-60.xml', 8)">2015年12月10日</li>
+          <li class="list-group-item list-group-item-success listactivexml" onclick="getxml(59, '540-60.xml', 9)">2015年12月11日</li>
+        </ul>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+      </div>
+    </div>
+   </div>
+ </div>
+ <div class="modal fade" id="myModal1" role="dialog">
+   <div class="modal-dialog">
+    
+    <!-- Modal content-->
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+        <h4 class="modal-title">Please Select Your Favoriate Article</h4>
+      </div>
+      <div class="modal-body">
+        <ul id="contentlist" class="list-group">
+          <li class="list-group-item list-group-item-success" onclick="init(29, '30-60.xml')"></li>
+        </ul>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+      </div>
+    </div>
+    
+  </div>
+</div>
+<div class="modal fade" id="myModal3" role="dialog">
+   <div class="modal-dialog">
+    
+    <!-- Modal content-->
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+        <h4 class="modal-title">About Me</h4>
+      </div>
+      <div class="modal-body">
+        <p>&nbsp;&nbsp;I am a Chinese Malasian living in Ipho, Perak. The purpose and idea to build this site is to give you convenience when visting a web site with collections of images. I am not a professional coder which would lead to potential bugs, so any problems happen when you vist my site, please do not hesitate to contacting with me. </p>
+        <p>email:hd211488@yahoo.com, you can call me mike.</p>
+        <p>Next Step, I am intendeding to build a video site with clean style view. By the way, if you think this idea is cool, and you want to further discuss with me, email to me please!</p>
+        
+        
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+      </div>
+    </div>
+    
+  </div>
+</div>
+
+
+</body>
+</html>

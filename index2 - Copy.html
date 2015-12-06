@@ -1,0 +1,188 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="css/bootstrap.min.css">
+<script src="js/jquery-1.11.2.min.js" type="text/javascript"></script>
+<script src="js/bootstrap.min.js"></script>
+<link rel="stylesheet" type="text/css" href="i_bootstrap.css">
+<title>Bootstrap Test</title>
+</head>
+<style>
+
+
+</style>
+<script>
+init(29, '30-60.xml');
+
+function init(a, b){
+maxindex = a;
+currentxml = b;
+start();
+	}
+
+function start(){
+$(document).ready(function() {
+   getnav();
+   getimge(0);
+   
+   $('.glyphicon-forward').click(function(){
+	   var currentindex = $('#indexnum').text();
+	   currentindex++;
+	   if(currentindex > maxindex){
+		   currentindex = maxindex;
+		   }
+	   getimge(currentindex);
+	   
+	   });
+	$('.glyphicon-backward').click(function(){
+	   var currentindex = $('#indexnum').text();
+	   currentindex--;
+	   if(currentindex < 0){
+		   currentindex = 0;
+		   }
+	   getimge(currentindex);
+	   
+	   });
+	$('.glyphicon-question-sign').click(function(){
+	   var numa = Math.random();
+	   var numb = numa*maxindex;
+	   var num = Math.round(numb);
+	   getimge(num);
+	   });
+   
+   $('.dropdown').on('show.bs.dropdown', function(){
+	   var x = $("#i_title").attr("data-title-id");
+	   $(".list-group-item").removeClass("active");
+       $(".list-group-item:nth-child("+x+")").addClass("active");
+	   $('.dropdown-menu').css('height', screen.availHeight-200);
+	   });
+   
+   
+});
+}
+function getimge(index) {
+	$.get(currentxml, function(response, status){
+	   if (status == "success") {
+		   var title = $(response).find('page').eq(index).find('title').text();
+		   $('#img').find('img').remove();
+		   $('#i_title').html(title);
+		   $('#i_title').attr("data-title-id",index+1);
+		   $('#indexnum').html(index);
+		   $(response).find('page').eq(index).find('url').each(function(){
+			   var url = $(this).text();
+			   $("#img").append('<img src="'+url+'" style="min-width: 100%" class="img-thumbnail img-responsive">');
+			   });
+		   }
+	   })
+	}
+function getnav(){
+	$.get(currentxml, function(response, status){
+	   if (status == "success") {
+		   $(response).find('title').each(function(){
+		   var title = $(this).text();
+		   var contentid = $(this).prev().text();
+		   var contentindex = $(this).parent().index();
+		   var siblingnum = $(this).next().children().length - 1;
+		   $("#indexnvi").append('<a href="#" class="list-group-item" onclick="getimge('+contentindex+')" data-index="6">'+
+                                '<h5 class="list-group-item-heading">'+title+'</h5>'+
+                                '<p class="list-group-item-text">-----------<span class="badge">'+siblingnum+'</span>--------</p></a>'
+			  );
+		   });
+		 
+		   }
+	   })
+	
+	}
+function get(n){
+	alert(n);
+	}
+
+</script>
+<body>
+  <div id="indexnum">3</div>
+  <div id="a">
+    <h1>Example Page Header</h1>
+  </div>
+  <nav data-spy="affix" data-offset-top="150">
+    <div class="container-fluid i_header_bgstyle">
+      <div class="i_header i_header_iconsize">
+        <ul class="i_header_ul">
+          <li class="dropdown">
+            <a id="menu1" class="dropdown-toggle" data-toggle="dropdown" href="#">
+              <span class="glyphicon glyphicon-menu-hamburger"></span>
+            </a>
+            <ul id="iul" class="dropdown-menu" style="margin:0; overflow:scroll; overflow-x:hidden; width:200px;">
+            
+              <div id="indexnvi" class="list-group">
+              </div>
+            </ul>
+            
+          </li>
+          <li>
+            <a href="#" data-toggle="modal" data-target="#myModal" >
+              <span class="glyphicon glyphicon-home"></span>
+            </a>
+          </li>
+          <li>
+            <a href="#">
+              <span class="glyphicon glyphicon-user"></span>
+            </a>
+          </li> 
+        </ul>
+      </div>
+      <div class="i_header_right i_header_iconsize">
+        <ul class="i_header_ul">
+          <li><a href="#"><span class="glyphicon glyphicon-backward"></span></a></li>
+          <li><a href="#"><span class="glyphicon glyphicon-question-sign"></span></a></li>
+          <li><a href="#"><span class="glyphicon glyphicon-forward"></span></a></li> 
+        </ul>
+      </div>
+    <div style="clear:both"></div>
+    </div>
+  </nav>
+<div id="img" class="container">
+  <div id="i_title" class="well" data-title-id="0" style="margin-top:10px; font-size:1.5em">0</div>  
+</div>
+  <!-- Modal -->
+<div class="modal fade" id="myModal" role="dialog">
+  <div class="modal-dialog">
+  
+    <!-- Modal content-->
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+        <h4 class="modal-title">Modal Header</h4>
+      </div>
+      <div class="modal-body">
+        <ul class="list-group">
+          <li class="list-group-item list-group-item-success" onclick="init(29, '30-60.xml')">2015年12月3日</li>
+          <li class="list-group-item list-group-item-info" onclick="init(29, '0-30.xml')">2015年12月3日</li>
+          <li class="list-group-item list-group-item-warning" onclick="init(29, '30-60.xml')">2015年12月3日</li>
+          <li class="list-group-item list-group-item-danger" onclick="init(29, '0-30.xml')">2015年12月3日</li>
+          <li class="list-group-item list-group-item-success" onclick="init(29, '30-60.xml')">2015年12月3日</li>
+          <li class="list-group-item list-group-item-info" onclick="init(29, '0-30.xml')">2015年12月3日</li>
+          <li class="list-group-item list-group-item-warning" onclick="init(29, '30-60.xml')">2015年12月3日</li>
+          <li class="list-group-item list-group-item-danger" onclick="init(29, '0-30.xml')">2015年12月3日</li>
+          <li class="list-group-item list-group-item-success" onclick="init(29, '30-60.xml')">2015年12月3日</li>
+          <li class="list-group-item list-group-item-info" onclick="init(29, '0-30.xml')">2015年12月3日</li>
+          <li class="list-group-item list-group-item-warning" onclick="init(29, '30-60.xml')">2015年12月3日</li>
+          <li class="list-group-item list-group-item-danger" onclick="init(29, '0-30.xml')">2015年12月3日</li>
+          <li class="list-group-item list-group-item-success" onclick="init(29, '30-60.xml')">2015年12月3日</li>
+          <li class="list-group-item list-group-item-info" onclick="init(29, '0-30.xml')">2015年12月3日</li>
+          <li class="list-group-item list-group-item-warning" onclick="init(29, '30-60.xml')">2015年12月3日</li>
+          <li class="list-group-item list-group-item-danger" onclick="init(29, '0-30.xml')">2015年12月3日</li>
+        </ul>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+      </div>
+    </div>
+    
+  </div>
+</div>
+
+
+</body>
+</html>
